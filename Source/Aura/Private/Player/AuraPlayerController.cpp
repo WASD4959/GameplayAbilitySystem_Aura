@@ -74,12 +74,12 @@ void AAuraPlayerController::CurseTrace()
 	
 	if (lastHitActor != nullptr)
 	{
-		lastHitActor->UnHeightLightActor();
+		lastHitActor->UnHighLightActor();
 	}
 	
 	if (currentHitActor != nullptr)
 	{
-		currentHitActor->HeightLightActor();
+		currentHitActor->HighLightActor();
 	}
 	
 	lastHitActor = currentHitActor;
