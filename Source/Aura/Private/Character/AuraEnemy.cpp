@@ -1,11 +1,19 @@
 // Copyright putuitou
 
 #include "Character/AuraEnemy.h"
+#include "AbilitySystem/AuraAbilitySystemComponent.h"
+#include "AbilitySystem/AuraAttributeSet.h"
 #include "Aura/Aura.h"
 
 AAuraEnemy::AAuraEnemy()
 {
 	GetMesh()->SetCollisionResponseToChannel(ECC_Visibility, ECR_Block);
+	
+	abilitySystemComponent = CreateDefaultSubobject<UAuraAbilitySystemComponent>("AbilitySystemComponent");
+	abilitySystemComponent->SetIsReplicated(true);
+	abilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Minimal);
+	
+	attributeSet = CreateDefaultSubobject<UAuraAttributeSet>("AttributeSet");
 }
 
 void AAuraEnemy::HighLightActor()
@@ -22,4 +30,11 @@ void AAuraEnemy::UnHighLightActor()
 	GetMesh()->SetCustomDepthStencilValue(0.0f);
 	weapon->SetRenderCustomDepth(false);
 	weapon->SetCustomDepthStencilValue(0.0f);
+}
+
+void AAuraEnemy::BeginPlay()
+{
+	Super::BeginPlay();
+	check(abilitySystemComponent);
+	abilitySystemComponent->InitAbilityActorInfo(this, this);
 }
