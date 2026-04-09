@@ -8,14 +8,14 @@ AAuraCharacterBase::AAuraCharacterBase()
 {
 	PrimaryActorTick.bCanEverTick = false;
 
-	weapon = CreateDefaultSubobject<USkeletalMeshComponent>("weapon");
-	weapon->SetupAttachment(GetMesh(), FName("WeaponHandSocket"));
-	weapon->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	Weapon = CreateDefaultSubobject<USkeletalMeshComponent>("Weapon");
+	Weapon->SetupAttachment(GetMesh(), FName("WeaponHandSocket"));
+	Weapon->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 
 UAbilitySystemComponent* AAuraCharacterBase::GetAbilitySystemComponent() const
 {
-	return abilitySystemComponent;
+	return AbilitySystemComponent;
 }
 
 // Called when the game starts or when spawned

@@ -22,13 +22,13 @@ class AURA_API AAuraPlayerController : public APlayerController
 	
 private:
 	UPROPERTY(EditAnywhere, Category = "Input")
-	TObjectPtr<UInputMappingContext> auraContext;
+	TObjectPtr<UInputMappingContext> AuraContext;
 	
 	UPROPERTY(EditAnywhere, Category = "Input")
-	TObjectPtr<UInputAction> moveAction;
+	TObjectPtr<UInputAction> MoveAction;
 	
-	TScriptInterface<IEnemyInterface> lastHitActor;
-	TScriptInterface<IEnemyInterface> currentHitActor;
+	TScriptInterface<IEnemyInterface> LastHitActor;
+	TScriptInterface<IEnemyInterface> CurrentHitActor;
 	
 	void Move(const FInputActionValue& inputActionValue);
 	void CurseTrace();

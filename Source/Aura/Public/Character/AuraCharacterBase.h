@@ -20,17 +20,17 @@ public:
 	
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 	
-	UAttributeSet* GetAttributeSet() const {return attributeSet;};
+	UAttributeSet* GetAttributeSet() const {return AttributeSet;};
 
 protected:
 	virtual void BeginPlay() override;
 
 	UPROPERTY(EditAnywhere, Category = "Combat")
-	TObjectPtr<USkeletalMeshComponent> weapon;
+	TObjectPtr<USkeletalMeshComponent> Weapon;
 	
 	UPROPERTY()
-	TObjectPtr<UAbilitySystemComponent> abilitySystemComponent;
+	TObjectPtr<UAbilitySystemComponent> AbilitySystemComponent;
 	
 	UPROPERTY()
-	TObjectPtr<UAttributeSet> attributeSet;
+	TObjectPtr<UAttributeSet> AttributeSet;
 };

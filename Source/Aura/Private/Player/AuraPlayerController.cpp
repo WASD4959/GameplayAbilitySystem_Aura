@@ -21,11 +21,11 @@ void AAuraPlayerController::PlayerTick(float DeltaTime)
 void AAuraPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
-	check(auraContext);
+	check(AuraContext);
 	
 	UEnhancedInputLocalPlayerSubsystem* sub_system = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer());
 	check(sub_system);
-	sub_system->AddMappingContext(auraContext, 0);
+	sub_system->AddMappingContext(AuraContext, 0);
 
 	bShowMouseCursor = true;
 	DefaultMouseCursor = EMouseCursor::Default;
@@ -41,7 +41,7 @@ void AAuraPlayerController::SetupInputComponent()
 	Super::SetupInputComponent();
 	
 	UEnhancedInputComponent* enhancedInputComponent = CastChecked<UEnhancedInputComponent>(InputComponent);
-	enhancedInputComponent->BindAction(moveAction, ETriggerEvent::Triggered, this, &AAuraPlayerController::Move);
+	enhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AAuraPlayerController::Move);
 }
 
 void AAuraPlayerController::Move(const FInputActionValue& inputActionValue)
@@ -66,22 +66,22 @@ void AAuraPlayerController::CurseTrace()
 	GetHitResultUnderCursor(ECC_Visibility, false, hitResult);
 	if (hitResult.bBlockingHit == false) return;
 	
-	currentHitActor = hitResult.GetActor();
-	if (lastHitActor == currentHitActor)
+	CurrentHitActor = hitResult.GetActor();
+	if (LastHitActor == CurrentHitActor)
 	{
 		return;
 	}
 	
-	if (lastHitActor != nullptr)
+	if (LastHitActor != nullptr)
 	{
-		lastHitActor->UnHighLightActor();
+		LastHitActor->UnHighLightActor();
 	}
 	
-	if (currentHitActor != nullptr)
+	if (CurrentHitActor != nullptr)
 	{
-		currentHitActor->HighLightActor();
+		CurrentHitActor->HighLightActor();
 	}
 	
-	lastHitActor = currentHitActor;
+	LastHitActor = CurrentHitActor;
 }
 
