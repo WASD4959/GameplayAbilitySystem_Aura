@@ -54,5 +54,7 @@ protected:
 	TObjectPtr<UAttributeSet> AttributeSet;
 	
 public:
-	void SetWidgetControllerParams(const FWidgetControllerParams WidgetControllerParams);	
+	void SetWidgetControllerParams(const FWidgetControllerParams WidgetControllerParams);
+	
+	virtual void BroadcastInitialValues();
 };
