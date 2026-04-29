@@ -51,32 +51,32 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Applied Effects")
 	bool bDestroyOnEffectRemoval = false;
 	
-	//Gameplay Effect Class
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Applied Effects")
+	float ActorLevel = 1.0f;
+	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Applied Effects")
 	TSubclassOf<UGameplayEffect> InstantGameplayEffectClass;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Applied Effects")
+	EEffectApplicationPolicy InstantEffectApplicationPolicy = EEffectApplicationPolicy::DoNotApply;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Applied Effects")
+	EEffectRemovePolicy InstantEffectRemovePolicy = EEffectRemovePolicy::DoNotRemove;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Applied Effects")
 	TSubclassOf<UGameplayEffect> DurationGameplayEffectClass;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Applied Effects")
-	TSubclassOf<UGameplayEffect> InfiniteGameplayEffectClass;
-	
-	//Effect Application Policy
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Applied Effects")
-	EEffectApplicationPolicy InstantEffectApplicationPolicy = EEffectApplicationPolicy::DoNotApply;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Applied Effects")
 	EEffectApplicationPolicy DurationEffectApplicationPolicy = EEffectApplicationPolicy::DoNotApply;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Applied Effects")
-	EEffectApplicationPolicy InfiniteEffectApplicationPolicy = EEffectApplicationPolicy::DoNotApply;
-	
-	//Effect Application Policy
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Applied Effects")
-	EEffectRemovePolicy InstantEffectRemovePolicy = EEffectRemovePolicy::DoNotRemove;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Applied Effects")
 	EEffectRemovePolicy DurationEffectRemovePolicy = EEffectRemovePolicy::DoNotRemove;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Applied Effects")
+	TSubclassOf<UGameplayEffect> InfiniteGameplayEffectClass;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Applied Effects")
+	EEffectApplicationPolicy InfiniteEffectApplicationPolicy = EEffectApplicationPolicy::DoNotApply;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Applied Effects")
 	EEffectRemovePolicy InfiniteEffectRemovePolicy = EEffectRemovePolicy::DoNotRemove;
