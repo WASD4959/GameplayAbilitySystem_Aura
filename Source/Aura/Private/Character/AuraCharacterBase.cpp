@@ -23,7 +23,6 @@ void AAuraCharacterBase::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	checkf(false, TEXT("Character initialization failed"));
 }
 
 void AAuraCharacterBase::InitAbilityActorInfo()
