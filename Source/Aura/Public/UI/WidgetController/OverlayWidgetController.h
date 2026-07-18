@@ -79,6 +79,10 @@ protected:
 template <typename T>
 T* UOverlayWidgetController::GetDataTableRowByTag(UDataTable* DataTable, const FGameplayTag& Tag)
 {
+	if(!DataTable)	
+	{
+		return nullptr;
+	}
 	
 	return DataTable->FindRow<T>(Tag.GetTagName(), TEXT("UOverlayWidgetController::GetDataTableRowByTag"));
 }
