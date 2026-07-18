@@ -5,6 +5,7 @@
 #include "GameplayEffectTypes.h"
 #include "AbilitySystem/AuraAttributeSet.h"
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
+#include "Chaos/Character/CharacterGroundConstraintContainer.h"
 
 void UOverlayWidgetController::BroadcastInitialValues()
 {
@@ -33,12 +34,21 @@ void UOverlayWidgetController::BindCallbacksToDependencies()
 		AuraAttributeSet->GetMaxManaAttribute()).AddUObject(this, &UOverlayWidgetController::MaxManaChanged);
 	
 	Cast<UAuraAbilitySystemComponent>(AbilitySystemComponent)->EffectAssetTags.AddLambda(
-		[](const FGameplayTagContainer& AssetTags)
+		[this](const FGameplayTagContainer& AssetTags)
 		{
+			FGameplayTag MessageTag = FGameplayTag::RequestGameplayTag(FName("Message"));
+			if (!MessageTag.IsValid())
+			{
+				return;
+			}
+			
 			for (const FGameplayTag& Tag : AssetTags)
 			{
-				FString Msg = FString::Format(TEXT("GE Tag: {0}"), { Tag.ToString() });
-				GEngine->AddOnScreenDebugMessage(-1, 8.f, FColor::Blue, Msg);
+				if (Tag.MatchesTag(MessageTag))
+				{
+					FUIWidgetRow* Row = GetDataTableRowByTag<FUIWidgetRow>(MessageWidgetDataTable, Tag);
+					MessageWidgetRowSignature.Broadcast(*Row);
+				}
 			}
 		});
 }

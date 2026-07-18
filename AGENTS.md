@@ -37,6 +37,8 @@
 
 When reviewing a commit or pull request:
 
+- Write the entire review summary and every finding in Simplified Chinese.
+- Keep code identifiers, class and function names, file paths, API names, and compiler diagnostics in their original language.
 - Review the changed diff and enough surrounding code to validate behavior; do not review filenames in isolation.
 - Prioritize correctness, regressions, crashes, undefined behavior, security, multiplayer desynchronization, and material performance problems.
 - Pay particular attention to UObject/Actor lifetime, garbage collection, null validity, GAS effect and attribute behavior, replication and authority, RPC ownership, Blueprint compatibility, and expensive per-frame work.
