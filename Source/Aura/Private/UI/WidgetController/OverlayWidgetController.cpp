@@ -7,6 +7,13 @@
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "Chaos/Character/CharacterGroundConstraintContainer.h"
 
+void UOverlayWidgetController::BeginDestroy()
+{
+	UnbindCallbacksFromDependencies();
+	
+	Super::BeginDestroy();
+}
+
 void UOverlayWidgetController::BroadcastInitialValues()
 {
 	const UAuraAttributeSet* AuraAttributeSet = CastChecked<UAuraAttributeSet>(AttributeSet);
@@ -19,48 +26,94 @@ void UOverlayWidgetController::BroadcastInitialValues()
 
 void UOverlayWidgetController::BindCallbacksToDependencies()
 {
+	UnbindCallbacksFromDependencies();
+	
 	const UAuraAttributeSet* AuraAttributeSet = CastChecked<UAuraAttributeSet>(AttributeSet);
 	
-	AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AuraAttributeSet->GetHealthAttribute()).AddLambda(
+	HealthChangedDelegateHandle = AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AuraAttributeSet->GetHealthAttribute()).AddWeakLambda(this,
 		[this](const FOnAttributeChangeData& Data)
 		{
 			OnHealthChanged.Broadcast(Data.NewValue);
 		});
 	
-	AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AuraAttributeSet->GetMaxHealthAttribute()).AddLambda(
+	MaxHealthChangedDelegateHandle = AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AuraAttributeSet->GetMaxHealthAttribute()).AddWeakLambda(this,
 		[this](const FOnAttributeChangeData& Data)
 		{
 			OnMaxHealthChanged.Broadcast(Data.NewValue);
 		});
 	
-	AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AuraAttributeSet->GetManaAttribute()).AddLambda(
+	ManaChangedDelegateHandle = AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AuraAttributeSet->GetManaAttribute()).AddWeakLambda(this,
 		[this](const FOnAttributeChangeData& Data)
 		{
 			OnManaChanged.Broadcast(Data.NewValue);
 		});
 	
-	AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AuraAttributeSet->GetMaxManaAttribute()).AddLambda(
-[this](const FOnAttributeChangeData& Data)
+	MaxManaChangedDelegateHandle = AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AuraAttributeSet->GetMaxManaAttribute()).AddWeakLambda(this,
+		[this](const FOnAttributeChangeData& Data)
 		{
 			OnMaxManaChanged.Broadcast(Data.NewValue);
 		});
 	
-	Cast<UAuraAbilitySystemComponent>(AbilitySystemComponent)->EffectAssetTags.AddLambda(
-		[this](const FGameplayTagContainer& AssetTags)
-		{
-			FGameplayTag MessageTag = FGameplayTag::RequestGameplayTag(FName("Message"));
-			if (!MessageTag.IsValid())
+	if (UAuraAbilitySystemComponent* AuraAbilitySystemComponent = Cast<UAuraAbilitySystemComponent>(AbilitySystemComponent))
+	{
+		EffectAssetTagsDelegateHandle = AuraAbilitySystemComponent->EffectAssetTags.AddWeakLambda(this,
+			[this](const FGameplayTagContainer& AssetTags)
 			{
-				return;
-			}
-			
-			for (const FGameplayTag& Tag : AssetTags)
-			{
-				if (Tag.MatchesTag(MessageTag))
+				FGameplayTag MessageTag = FGameplayTag::RequestGameplayTag(FName("Message"));
+				if (!MessageTag.IsValid())
 				{
-					FUIWidgetRow* Row = GetDataTableRowByTag<FUIWidgetRow>(MessageWidgetDataTable, Tag);
-					MessageWidgetRowSignature.Broadcast(*Row);
+					return;
 				}
-			}
-		});
+			
+				for (const FGameplayTag& Tag : AssetTags)
+				{
+					if (Tag.MatchesTag(MessageTag))
+					{
+						FUIWidgetRow* Row = GetDataTableRowByTag<FUIWidgetRow>(MessageWidgetDataTable, Tag);
+						MessageWidgetRowSignature.Broadcast(*Row);
+					}
+				}
+			});
+	}
+}
+
+void UOverlayWidgetController::UnbindCallbacksFromDependencies()
+{
+	const UAuraAttributeSet* AuraAttributeSet = Cast<UAuraAttributeSet>(AttributeSet);
+	if (AbilitySystemComponent && AuraAttributeSet)
+	{
+		if (HealthChangedDelegateHandle.IsValid())
+		{
+			AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AuraAttributeSet->GetHealthAttribute()).Remove(HealthChangedDelegateHandle);
+			HealthChangedDelegateHandle.Reset();
+		}
+		
+		if (MaxHealthChangedDelegateHandle.IsValid())
+		{
+			AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AuraAttributeSet->GetMaxHealthAttribute()).Remove(MaxHealthChangedDelegateHandle);
+			MaxHealthChangedDelegateHandle.Reset();
+		}
+		
+		if (ManaChangedDelegateHandle.IsValid())
+		{
+			AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AuraAttributeSet->GetManaAttribute()).Remove(ManaChangedDelegateHandle);
+			ManaChangedDelegateHandle.Reset();
+		}
+		
+		if (MaxManaChangedDelegateHandle.IsValid())
+		{
+			AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AuraAttributeSet->GetMaxManaAttribute()).Remove(MaxManaChangedDelegateHandle);
+			MaxManaChangedDelegateHandle.Reset();
+		}
+	}
+	
+	if (EffectAssetTagsDelegateHandle.IsValid())
+	{
+		if (UAuraAbilitySystemComponent* AuraAbilitySystemComponent = Cast<UAuraAbilitySystemComponent>(AbilitySystemComponent))
+		{
+			AuraAbilitySystemComponent->EffectAssetTags.Remove(EffectAssetTagsDelegateHandle);
+		}
+		
+		EffectAssetTagsDelegateHandle.Reset();
+	}
 }
